@@ -5,9 +5,12 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.SquadraDifferenza;
+import it.polito.tdp.PremierLeague.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,7 +38,7 @@ public class FXMLController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbSquadra"
-    private ComboBox<?> cmbSquadra; // Value injected by FXMLLoader
+    private ComboBox<Team> cmbSquadra; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -49,11 +52,46 @@ public class FXMLController {
     @FXML
     void doClassifica(ActionEvent event) {
 
+    	txtResult.clear();
+    	Team t = cmbSquadra.getValue();
+    	if(t == null) {
+    		txtResult.appendText("ERRORE: selezionare una squadra");
+    		return;
+    	}
+    	
+    	List<SquadraDifferenza> migliori = model.getMigliori(t);
+    	List<SquadraDifferenza> peggiori = model.getPeggiori(t);
+    	
+    	this.txtResult.appendText("SQUADRE MIGLIORI:\n");
+    	for(SquadraDifferenza sd: migliori) {
+    		this.txtResult.appendText(sd.toString() + "\n");
+    	}
+    	
+    	this.txtResult.appendText("\nSQUADRE PEGGIORI:\n");
+    	for(SquadraDifferenza sd : peggiori) {
+    		this.txtResult.appendText(sd.toString() + "\n");
+    	}
+    	
+    	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
 
+    	this.txtResult.clear();
+    	
+    	model.creaGrafo();
+    	cmbSquadra.getItems().setAll(model.getSquadre());
+    	
+    	this.txtResult.appendText("Grafo creato\n");
+    	this.txtResult.appendText("# VERTICI: "+model.getSizeVertex() + "\n");
+    	this.txtResult.appendText("# ARCHI: " + model.getSizeEdge());
+    	this.btnClassifica.setDisable(false);
+    	this.cmbSquadra.setDisable(false);
+    	this.txtN.setDisable(false);
+    	this.txtX.setDisable(false);
+    	this.btnSimula.setDisable(false);
+    	this.btnCreaGrafo.setDisable(true);
     }
 
     @FXML
