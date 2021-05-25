@@ -10,6 +10,9 @@ public class TestModel {
 		
 //		System.out.println(m.getMigliori(null));
 //		System.out.println(m.getPeggiori(null));
+		m.setSim(10, 6);
+		System.out.println(m.getMediaReporter());
+		System.out.println(m.getPartiteCritiche());
 	}
 
 }

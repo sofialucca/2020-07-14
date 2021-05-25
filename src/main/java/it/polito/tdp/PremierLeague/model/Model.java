@@ -19,11 +19,15 @@ public class Model {
 	private PremierLeagueDAO dao;
 	private Map<Integer ,Team> idMap;
 	private Graph<Team, DefaultWeightedEdge> grafo;
+	private Simulatore sim;
+	private List<Team> classifica;
 	
 	public Model() {
 		dao = new PremierLeagueDAO();
 		idMap = new HashMap<>();
 		dao.listAllTeams(idMap);
+		sim = new Simulatore();
+		classifica = new ArrayList<>();
 	}
 	
 	public void creaGrafo() {
@@ -34,7 +38,7 @@ public class Model {
 		Graphs.addAllVertices(grafo, idMap.values());
 		
 		//archi
-		List<Team> classifica = dao.getClassifica(idMap);
+		classifica = dao.getClassifica(idMap);
 		
 		for(Team t1: classifica) {
 			for (Team t2: classifica) {
@@ -50,11 +54,7 @@ public class Model {
 
 			}
 		}
-		
-		System.out.println("GRAFO CREATO CON SUCCESSO\n");
-		System.out.println("# ARCHI:"+grafo.edgeSet().size());
-		System.out.println("# VERTICI:"+grafo.vertexSet().size());
-		
+				
 	}
 	
 	public List<SquadraDifferenza> getMigliori(Team team){
@@ -89,5 +89,18 @@ public class Model {
 	
 	public int getSizeEdge() {
 		return grafo.edgeSet().size();
+	}
+	
+	public void setSim(int N, int X) {
+		sim.init(N, X, dao.listAllMatches(), classifica);
+		sim.run();
+	}
+	
+	public double getMediaReporter() {
+		return sim.getMedia();
+	}
+	
+	public int getPartiteCritiche() {
+		return sim.getCritiche();
 	}
 }

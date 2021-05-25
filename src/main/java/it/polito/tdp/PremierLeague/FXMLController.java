@@ -97,9 +97,53 @@ public class FXMLController {
     @FXML
     void doSimula(ActionEvent event) {
 
+    	txtResult.clear();
+    	
+    	if(!isValid()) {
+    		return;
+    	}
+    	
+    	int X = Integer.parseInt(txtX.getText());
+    	int N = Integer.parseInt(txtN.getText());
+    	
+    	model.setSim(N, X);
+    	
+    	txtResult.appendText("NUMERO DI REPORTER MEDI PER PARTITA: " + String.format("%.5g%n",model.getMediaReporter()));
+    	txtResult.appendText("\nNUMERO DI PARTITE CON MENO DI " + X + " REPORTER: " + model.getPartiteCritiche());
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    private boolean isValid() {
+		String N = this.txtN.getText();
+		String X = this.txtX.getText();
+		boolean check = true;
+		
+		if(N == null) {
+			txtResult.appendText("ERRORE: inserire un valore nel campo N\n");
+			check = false;
+		}else {
+			try {
+				Integer.parseInt(N);
+			}catch(NumberFormatException nfe) {
+				txtResult.appendText("ERRORE: il valore di N deve essere un numero intero\n");
+				check = false;
+			}
+		}
+		
+		if( X ==  null) {
+			txtResult.appendText("ERRORE: inserire un valore nel campo X\n");
+			check = false;
+		}else {
+			try {
+				Integer.parseInt(X);
+			}catch(NumberFormatException nfe) {
+				txtResult.appendText("ERRORE: il valore di X deve essere un numero intero\n");
+				check = false;
+			}
+		}
+		return check;
+	}
+
+	@FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert btnCreaGrafo != null : "fx:id=\"btnCreaGrafo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert btnClassifica != null : "fx:id=\"btnClassifica\" was not injected: check your FXML file 'Scene.fxml'.";
